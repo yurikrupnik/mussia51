@@ -1,11 +1,10 @@
 docker_build(
-  "yurikrupnik/web-playground",
+  "yurikrupnik/todo-api",
   "../..",
   dockerfile="../../rust.Dockerfile",
   build_args={"APP_NAME":"todo_api"},
   target="final",
-  ignore=["k8s", "../../manifests", "../../platform"],
+  ignore=["./k8s", "../../manifests", "./migrations"],
 )
-k8s_resource("web-playground", port_forwards="5201:8080")
-#k8s_yaml(kustomize('manifests/kustomize/overlays/dev'))
-#k8s_resource("web-playground", port_forwards="5201:8080")
+
+k8s_resource("todo-api", port_forwards="5201:8080")

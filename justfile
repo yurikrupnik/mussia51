@@ -1,8 +1,10 @@
-#include "manifests/justfile"
-#import 'manifests/justfile'
+import "manifests/dockers/app/justfile"
 
-nx-create:
-  bunx create-nx-workspace --pm bun --preset=@monodon/rust
+local-cluster:
+  -kind create cluster --config ./manifests/k8s/cluster/cluster.yaml
+  sleep 20
+  kubectl create ns monitoring
+  helm install my-kube-prometheus-stack prometheus-community/kube-prometheus-stack --version 70.1.1 -n monitoring
 
 default:
     bun nx run-many -t test --parallel --max-parallel=10

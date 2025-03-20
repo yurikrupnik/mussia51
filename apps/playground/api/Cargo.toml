@@ -1,0 +1,16 @@
+[package]
+name = "playground_api"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+lib_utils.workspace = true
+axum.workspace = true
+http = "1.3"
+tokio.workspace = true
+tracing-subscriber.workspace = true
+tracing.workspace = true
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

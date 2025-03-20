@@ -1,0 +1,41 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: my-scaledobject
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: web-playground
+  minReplicaCount: 1                                       # Optional. Default: 0
+  maxReplicaCount: 6
+  triggers:
+    - type: prometheus
+      metadata:
+#        serverAddress: http://prometheus-server.monitoring.svc.cluster.local
+        serverAddress: http://prometheus-server.monitoring:80
+#        metricName: http_requests_total
+#        threshold: "250000000"
+        threshold: "2000000000"
+        query: sum(container_memory_usage_bytes{namespace="default", container="web-playground"})
+        # Optional. Default: 1
+        # operator: GreaterThan
+        # Optional. Default: 1
+        # step: 1
+        # Optional. Default: 1
+        # increase: 1
+        # Optional. Default: 1
+        # decrease: 1
+        # Optional. Default: 1
+        # interval: 30s
+        # Optional. Default: 30s
+        # labels:
+        #   mylabel: myvalue
+        # Optional. Default: {}
+        # annotations:
+        #   myannotation: myvalue
+        # Optional. Default: {}
+        # envSourceContainerName: { container-name }
+#  envSourceContainerName: { container-name }
+
+

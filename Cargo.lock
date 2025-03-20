@@ -81,6 +81,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "axum_utils"
+version = "0.1.0"
+
+[[package]]
 name = "backtrace"
 version = "0.3.74"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -257,6 +261,10 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 [[package]]
 name = "lib_utils"
 version = "0.1.0"
+dependencies = [
+ "tracing",
+ "tracing-subscriber",
+]
 
 [[package]]
 name = "libc"
@@ -318,6 +326,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "models"
+version = "0.1.0"
+
+[[package]]
 name = "nu-ansi-term"
 version = "0.46.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -367,6 +379,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
+name = "playground_api"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "http",
+ "lib_utils",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.94"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -374,6 +398,10 @@ checksum = "a31971752e70b8b2686d7e46ec17fb38dad4051d94024c88df49b667caea9c84"
 dependencies = [
  "unicode-ident",
 ]
+
+[[package]]
+name = "proc_macros"
+version = "0.1.0"
 
 [[package]]
 name = "quote"
@@ -501,6 +529,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "services"
+version = "0.1.0"
+
+[[package]]
 name = "sharded-slab"
 version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -567,6 +599,7 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "http",
+ "lib_utils",
  "tokio",
  "tracing",
  "tracing-subscriber",

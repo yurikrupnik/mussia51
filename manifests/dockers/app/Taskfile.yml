@@ -1,0 +1,16 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  app:compose:up:
+    cmds:
+      - docker compose up -d
+    desc: Run docker-compose up -d
+    silent: true
+  app:compose:down:
+    cmds:
+      - docker compose down -d
+    desc: Run docker-compose down -d
+    silent: true
+

@@ -25,11 +25,11 @@ spec:
               name: http
           resources:
             limits:
-              memory: "32Mi"
-              cpu: "500m"
-            requests:
               memory: "16Mi"
-              cpu: "250m"
+              cpu: "200m"
+            requests:
+              memory: "8Mi"
+              cpu: "100m"
           livenessProbe:
             httpGet:
               path: /health
@@ -51,16 +51,17 @@ spec:
             allowPrivilegeEscalation: false
           env:
             - name: RUST_LOG
-              value: "error"
+              value: info
             #              valueFrom:
             #                configMapKeyRef:
             #                  name: app-config
             #                  key: log_level
             - name: APP_ENV
-              valueFrom:
-                configMapKeyRef:
-                  name: app-config
-                  key: app_env
+              value: development
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: app-config
+#                  key: app_env
             - name: MONGO_URI
               #              value: "mongodb://host.docker.internal" # docker-compose
               value: "mongodb://mongodb-service.dbs.svc.cluster.local"

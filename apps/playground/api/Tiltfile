@@ -1,0 +1,11 @@
+docker_build(
+  "yurikrupnik/playground-api",
+  "../../..",
+  dockerfile="../../../rust.Dockerfile",
+  build_args={"APP_NAME":"playground_api"},
+  target="final",
+  ignore=["../../../manifests"],
+)
+
+
+k8s_resource("playground-api", port_forwards="5202:8080")

@@ -3,8 +3,8 @@ name = "todo_api"
 version = "0.1.0"
 edition = "2021"
 
-
 [dependencies]
+lib_utils.workspace = true
 axum.workspace = true
 http = "1.3"
 tokio.workspace = true

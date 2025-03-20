@@ -1,0 +1,5 @@
+# docker compose up for apps db
+docker-up:
+  docker compose up
+docker-down:
+  docker compose down
