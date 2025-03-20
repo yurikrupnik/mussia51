@@ -1,0 +1,7 @@
+resources:
+  - service-account.yaml
+  - deployment.yml
+  - service.yml
+#  - network-policy.yaml
+#  - test.yaml
+#  - scale.yaml

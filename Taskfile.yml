@@ -1,0 +1,77 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  default:
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
+  compose:up:
+    desc: Run the docker compose up command
+    cmds:
+      - docker compose --file manifests/dockers/compose.yaml up
+  compose:down:
+    desc: Run the docker compose down command
+    cmds:
+      - docker compose --file manifests/dockers/compose.yaml down
+  install-deps:
+    deps:
+      - default
+    cmds:
+      - just cluster
+      - kubectl create namespace argocd
+      - kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+      - kubectl -n argocd wait deployment argocd-server --for=condition=Available --timeout=180s
+      - argocd admin initial-password -n argocd
+      - kubectl apply -f manifests/gitops/infra/argocd/
+      - kubectl apply -f manifests/gitops/infra/monitoring/index.yaml
+      - kubectl apply -f manifests/gitops/infra/external-secrets/
+      - kubectl apply -f manifests/gitops/infra/crossplane/
+      - kubectl create ns apps
+      - sleep 60 # sleep for 30 sec to wait for flux to install all deps
+      - kubectl -n crossplane-system wait deployment crossplane --for=condition=Available --timeout=180s
+      - kubectl create secret generic es-secret --from-file=creds=./tmp/secrets/gcp-credentials.json -n crossplane-system
+      - kubectl create secret generic es-secret --from-file=creds=./tmp/secrets/gcp-credentials.json -n apps
+      - kubectl -n external-secrets wait deployment external-secrets-webhook --for=condition=Available --timeout=180s
+      - kubectl -n external-secrets wait deployment external-secrets-cert-controller --for=condition=Available --timeout=180s
+      - kubectl apply -f manifests/gitops/dependecies/external-secrets/
+      - kubectl apply -f manifests/gitops/dependecies/crossplane/providers.yaml
+      - kubectl wait "providers.pkg.crossplane.io/provider-gcp-storage" --for=condition=Healthy --timeout=600s
+      - kubectl wait "providers.pkg.crossplane.io/provider-gcp-storage" --for=condition=Installed --timeout=600s
+      - kubectl apply -f manifests/gitops/dependecies/crossplane/provider-config.yaml
+#      - kubectl apply -f manifests/gitops/dependecies/crossplane/storage.yaml
+#      - kubectl apply -f manifests/gitops/dependecies/crossplane/example-bucket.yaml
+#      new kcl module for stoage
+      #- kubectl apply -f generations/kcl/my_package/new-storage.yaml
+      #- kubectl apply -f manifests/gitops/dependecies/crossplane/example-bucket-kcl.yaml
+      #      deploy new cue package and resources then
+#      - kubectl apply -f manifests/gitops/dependecies/crossplane/index.yaml
+#      - kubectl apply -f manifests/gitops/infra/keda/
+#      - kubectl create secret generic gcp-secret -n crossplane-system --from-file=creds=./tmp/iac/gcp-credentials.json
+#      - kubectl create secret generic es-secret -n external-secrets --from-file=creds=./tmp/secrets/gcp-credentials.json
+#      - kubectl apply -f manifests/gitops/dependecies/external-secrets/
+#      - kubectl apply -f manifests/gitops/infra/argocd/
+#      - kubectl apply -f manifests/gitops/infra/argocd-rollouts/
+#      - kubectl apply -f manifests/gitops/infra/argocd-workflows/
+#      - kubectl apply -f manifests/gitops/infra/argocd-events/
+#      - kubectl apply -f manifests/gitops/infra/cnpg/
+#      - kubectl apply -f manifests/gitops/infra/cnpg/
+      #      - kubectl apply  -f manifests/gitops/infra/testkube/
+  #      - kubectl create namespace argocd
+  #      - kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  #      - testkube pro init --agent-token=tkcagnt_6fb9611ac46fcfdcca95ecc9d05570 --org-id=tkcorg_0b8082b78d25a72f --env-id=tkcenv_c161a3e3d8d82775
+  #      - timoni bundle apply -f manifests/bundle.cue -r manifests/runtime.cue --runtime-from-env
+  #      - kubectl annotate node --all kwasm.sh/kwasm-node=true # Annonate the nodes to support wasm runtime
+  #      - kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+  #      - kubectl apply -f manifests/configs/stage.yaml
+  doc:watch:
+    cmds:
+      - cargo doc --workspace --no-deps -r --open
+  #    watch: true
+  shits:
+    cmds:
+      - echo shits

@@ -1,0 +1,1 @@
+SELECT * FROM FOO WHERE id = $1;

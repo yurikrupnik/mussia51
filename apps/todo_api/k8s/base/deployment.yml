@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-playground
+  labels:
+    app: web-playground
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: web-playground
+      labels:
+        app: web-playground
+    spec:
+      serviceAccountName: web-playground
+      restartPolicy: Always
+      #      imagePullSecrets:
+      #        - name: docker-registry-secret
+      containers:
+        - name: web-playground
+          image: yurikrupnik/web-playground
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            limits:
+              memory: "32Mi"
+              cpu: "500m"
+            requests:
+              memory: "16Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 3000
+            capabilities:
+              drop:
+                - ALL
+            allowPrivilegeEscalation: false
+          env:
+            - name: RUST_LOG
+              value: "error"
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: app-config
+            #                  key: log_level
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: app_env
+            - name: MONGO_URI
+              #              value: "mongodb://host.docker.internal" # docker-compose
+              value: "mongodb://mongodb-service.dbs.svc.cluster.local"
+            - name: REDIS_URI
+              #              value: "redis://localhost:6379" # docker-compose
+              value: "redis-service.dbs.svc.cluster.local"
+            - name: DATABASE_URL
+              #              value: "postgres://myuser:mypassword@localhost/mydatabase" # docker-compose
+              value: "postgres://myuser:mypassword@postgres-service.dbs.svc.cluster.local"
+  selector:
+    matchLabels:
+      app: web-playground

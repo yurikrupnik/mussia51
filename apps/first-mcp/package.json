@@ -1,0 +1,24 @@
+{
+	"name": "first-mcp",
+	"module": "src/index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"build-tsc": "tsc && chmod 755 build/index.js",
+		"build-bun": "bun build src/index.ts --production --packages=external --outdir=out",
+		"build": "bun esbuild src/index.ts --platform=node --outdir=dist --packages=external --minify",
+		"build:all": "bun run build & bun run build-bun & bun run build-esbuild",
+		"lint": "biome check --write src/index.ts",
+		"lintd": "deno fmt src/index.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/node": "^22.13.10"
+	},
+	"dependencies": {
+		"@effect/schema": "^0.75.5",
+		"@modelcontextprotocol/sdk": "^1.7.0",
+		"effect": "^3.13.11",
+		"zod": "^3.24.2"
+	}
+}

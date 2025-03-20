@@ -6,7 +6,8 @@
       "sharedGlobals"
     ],
     "production": [
-      "default"
+      "default",
+      "!{projectRoot}/biome.json"
     ],
     "sharedGlobals": [
       "{workspaceRoot}/.github/workflows/ci.yml"
@@ -15,5 +16,24 @@
   "nxCloudId": "67d564c3a17f034cf1220359",
   "plugins": [
     "@monodon/rust"
-  ]
+  ],
+  "targetDefaults": {
+    "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ]
+    },
+    "lint-biome": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/biome.json"
+      ],
+      "cache": true
+    }
+  }
 }
